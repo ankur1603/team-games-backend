@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Scope("singleton")
 @Component
 public class GameBoard {
+    private final Map<String, Map<String, Boolean>> teamReady = new ConcurrentHashMap<>();
     private final Map<String, Map<String, Integer>> teamScore = new ConcurrentHashMap<>();
     private final Map<String, Map<String, Cell[][]>> teamBoard = new ConcurrentHashMap<>();
 
@@ -26,19 +27,19 @@ public class GameBoard {
     }
 
     public void incrementScore(String teamName, String subTeamName) {
-        this.teamScore.compute(teamName,(key,value)->{
-           if(value == null){
-               value = new HashMap<>();
-           }
-           value.compute(subTeamName, (k,v)->{
-              if(v== null){
-                  v = 0;
-              }
-              v++;
-              return v;
-           });
+        this.teamScore.compute(teamName, (key, value) -> {
+            if (value == null) {
+                value = new HashMap<>();
+            }
+            value.compute(subTeamName, (k, v) -> {
+                if (v == null) {
+                    v = 0;
+                }
+                v++;
+                return v;
+            });
 
-           return value;
+            return value;
         });
     }
 
@@ -48,12 +49,12 @@ public class GameBoard {
                        Integer row,
                        Integer col,
                        Boolean isDeployed) {
-        this.teamBoard.compute(teamName, (key, value)-> {
-            if(value==null){
+        this.teamBoard.compute(teamName, (key, value) -> {
+            if (value == null) {
                 value = new HashMap<>();
             }
-            value.compute(subTeamName, (k,v)->{
-                if(v==null){
+            value.compute(subTeamName, (k, v) -> {
+                if (v == null) {
                     v = new Cell[10][10];
                 }
                 v[row][col] = new Cell(isDeployed, "");
@@ -69,12 +70,12 @@ public class GameBoard {
                           Integer row,
                           Integer col) {
         Map<String, Cell[][]> boardMapping = this.teamBoard.getOrDefault(teamName, new HashMap<>());
-        Cell[][] board = boardMapping.get(opponentName);
+        Cell[][] board = boardMapping.getOrDefault(opponentName, new Cell[10][10]);
         Cell cell = board[row][col];
-        Boolean hit = cell != null && cell.getIsDeployed();
+        Boolean hit = cell != null && cell.getIsDeployed() && !cell.getHitOrMis().equals("hit");
         if (hit) {
             cell.setHitOrMis("hit");
-            incrementScore(teamName,subTeamName);
+            incrementScore(teamName, subTeamName);
         }
 
         return hit;

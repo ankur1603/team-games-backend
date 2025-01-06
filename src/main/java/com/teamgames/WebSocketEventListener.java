@@ -29,14 +29,14 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        Map<String,String> simpSessionAttr = (Map<String, String>) headerAccessor.getMessageHeaders().get("simpSessionAttributes");
+        Map<String, String> simpSessionAttr = (Map<String, String>) headerAccessor.getMessageHeaders().get("simpSessionAttributes");
 
         String playerName = simpSessionAttr.get("playerName");
         String teamName = simpSessionAttr.get("teamName");
-        if (playerName != null && teamName !=null) {
-            log.info("user disconnected: {}", playerName);
+        if (playerName != null && teamName != null) {
+            log.info("user disconnected: {} - {}", playerName, teamName);
             teamPlayers.removePlayer(teamName, playerName);
-            messagingTemplate.convertAndSend("/topic/".concat(teamName), new TGResponse(TGResponseType.PLAYERS,teamPlayers.getTeamPlayers(teamName)));
+            messagingTemplate.convertAndSend("/topic/".concat(teamName), new TGResponse(TGResponseType.PLAYERS, teamPlayers.getTeamPlayers(teamName)));
         }
     }
 

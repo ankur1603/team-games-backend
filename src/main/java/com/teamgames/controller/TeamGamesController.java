@@ -15,12 +15,10 @@ public class TeamGamesController {
 
     @Autowired
     private final SimpMessagingTemplate messagingTemplate;
-
-    @Autowired
-    private TeamPlayers teamPlayers;
-
     @Autowired
     private final GameBoard gameBoard;
+    @Autowired
+    private TeamPlayers teamPlayers;
 
     @MessageMapping("/joinGame")
     public void joinGame(
@@ -98,9 +96,9 @@ public class TeamGamesController {
         Integer col = tgRequest.getColumn();
         String topic = "/topic/" + teamName + "/" + subTeamName;
         String opponentTopic = "/topic/" + teamName + "/" + opponent;
-        Boolean hit = gameBoard.attack(teamName,subTeamName, opponent, row, col);
+        Boolean hit = gameBoard.attack(teamName, subTeamName, opponent, row, col);
         messagingTemplate.convertAndSend(opponentTopic, new TGResponse(TGResponseType.MARK_OPPONENT, hit ? "hit" : "miss", tgRequest.getRow(), tgRequest.getColumn(), gameBoard.getScore(teamName, opponent)));
-        messagingTemplate.convertAndSend(topic, new TGResponse(TGResponseType.MARK_SELF, hit ? "hit" : "miss" , tgRequest.getRow(), tgRequest.getColumn(), gameBoard.getScore(teamName, subTeamName)));
+        messagingTemplate.convertAndSend(topic, new TGResponse(TGResponseType.MARK_SELF, hit ? "hit" : "miss", tgRequest.getRow(), tgRequest.getColumn(), gameBoard.getScore(teamName, subTeamName)));
     }
 
 }
