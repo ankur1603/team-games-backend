@@ -41,7 +41,6 @@ public class TeamGamesController {
         String teamName = TGRequest.getTeamName();
         String topic = "/topic/" + teamName;
         teamPlayers.cleanupSubTeamMapping(teamName);
-        String admin = teamPlayers.getTeamPlayers(teamName).stream().findAny().orElseGet(() -> "");
         while (!teamPlayers.isTeamMappingEmpty(teamName)) {
             teamPlayers.moveRandomMember(teamName, "team1");
             Thread.sleep(100);
@@ -62,6 +61,8 @@ public class TeamGamesController {
         String topic = "/topic/" + teamName;
         teamPlayers.removeTeamAdmin(teamName);
         gameBoard.clearTeamBoardAndScore(teamName);
+        teamPlayers.cleanupSubTeamMapping(teamName);
+        teamPlayers.removeTeamMapping(teamName);
         messagingTemplate.convertAndSend(topic, new TGResponse(TGResponseType.END_GAME, null));
     }
 
@@ -97,7 +98,7 @@ public class TeamGamesController {
         String topic = "/topic/" + teamName + "/" + subTeamName;
         String opponentTopic = "/topic/" + teamName + "/" + opponent;
         Boolean hit = gameBoard.attack(teamName, subTeamName, opponent, row, col);
-        messagingTemplate.convertAndSend(opponentTopic, new TGResponse(TGResponseType.MARK_OPPONENT, hit ? "hit" : "miss", tgRequest.getRow(), tgRequest.getColumn(), gameBoard.getScore(teamName, opponent)));
+        messagingTemplate.convertAndSend(opponentTopic, new TGResponse(TGResponseType.MARK_OPPONENT, hit ? "hit" : "miss", tgRequest.getRow(), tgRequest.getColumn(), gameBoard.getScore(teamName, subTeamName)));
         messagingTemplate.convertAndSend(topic, new TGResponse(TGResponseType.MARK_SELF, hit ? "hit" : "miss", tgRequest.getRow(), tgRequest.getColumn(), gameBoard.getScore(teamName, subTeamName)));
     }
 

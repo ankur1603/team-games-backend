@@ -22,6 +22,10 @@ public class TeamPlayers {
         adminPlayer.computeIfAbsent(teamName, (s) -> playerName);
     }
 
+    public void removeTeamMapping(String teamName) {
+        teamMapping.remove(teamName);
+    }
+
     public void removeTeamAdmin(String teamName) {
         adminPlayer.remove(teamName);
     }
@@ -32,7 +36,7 @@ public class TeamPlayers {
     }
 
     public void addPlayerToTeam(String teamName, String playerName) {
-        Set<String> playerSet = this.teamMapping.getOrDefault(teamName, new HashSet<>());
+        Set<String> playerSet = this.teamMapping.getOrDefault(teamName, Collections.synchronizedSet(new HashSet<>()));
         playerSet.add(playerName);
         this.teamMapping.put(teamName, playerSet);
     }
@@ -47,11 +51,11 @@ public class TeamPlayers {
     }
 
     public List<String> getTeam1Players(String teamName) {
-        return this.team1Mapping.getOrDefault(teamName, new HashMap<>()).getOrDefault("team1", new ArrayList<>());
+        return this.team1Mapping.getOrDefault(teamName, new HashMap<>()).getOrDefault("team1", Collections.synchronizedList(new ArrayList<>()));
     }
 
     public List<String> getTeam2Players(String teamName) {
-        return this.team2Mapping.getOrDefault(teamName, new HashMap<>()).getOrDefault("team2", new ArrayList<>());
+        return this.team2Mapping.getOrDefault(teamName, new HashMap<>()).getOrDefault("team2", Collections.synchronizedList(new ArrayList<>()));
     }
 
 

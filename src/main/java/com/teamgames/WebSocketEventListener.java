@@ -35,6 +35,9 @@ public class WebSocketEventListener {
         String teamName = simpSessionAttr.get("teamName");
         if (playerName != null && teamName != null) {
             log.info("user disconnected: {} - {}", playerName, teamName);
+            if (playerName.equals(teamPlayers.getAdminPlayer().get(teamName))) {
+                teamPlayers.removeTeamAdmin(teamName);
+            }
             teamPlayers.removePlayer(teamName, playerName);
             messagingTemplate.convertAndSend("/topic/".concat(teamName), new TGResponse(TGResponseType.PLAYERS, teamPlayers.getTeamPlayers(teamName)));
         }
