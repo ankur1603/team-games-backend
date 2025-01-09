@@ -95,11 +95,13 @@ public class TeamGamesController {
         String opponent = tgRequest.getPayload();
         Integer row = tgRequest.getRow();
         Integer col = tgRequest.getColumn();
-        String topic = "/topic/" + teamName + "/" + subTeamName;
-        String opponentTopic = "/topic/" + teamName + "/" + opponent;
+        String baseTopic = "/topic/" + teamName;
+        String topic = baseTopic + "/" + subTeamName;
+        String opponentTopic = baseTopic + "/" + opponent;
         Boolean hit = gameBoard.attack(teamName, subTeamName, opponent, row, col);
         messagingTemplate.convertAndSend(opponentTopic, new TGResponse(TGResponseType.MARK_OPPONENT, hit ? "hit" : "miss", tgRequest.getRow(), tgRequest.getColumn(), gameBoard.getScore(teamName, subTeamName)));
         messagingTemplate.convertAndSend(topic, new TGResponse(TGResponseType.MARK_SELF, hit ? "hit" : "miss", tgRequest.getRow(), tgRequest.getColumn(), gameBoard.getScore(teamName, subTeamName)));
+        messagingTemplate.convertAndSend(baseTopic, new TGResponse(TGResponseType.TURN, opponent));
     }
 
 }

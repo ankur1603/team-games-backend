@@ -43,7 +43,8 @@ public class TeamPlayers {
 
     public void removePlayer(String teamName, String playerName) {
         Set<String> playerSet = this.teamMapping.get(teamName);
-        playerSet.remove(playerName);
+        if (playerSet != null && !playerSet.isEmpty())
+            playerSet.remove(playerName);
     }
 
     public Set<String> getTeamPlayers(String teamName) {

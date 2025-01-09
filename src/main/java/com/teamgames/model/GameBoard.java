@@ -72,10 +72,11 @@ public class GameBoard {
         Map<String, Cell[][]> boardMapping = this.teamBoard.getOrDefault(teamName, new HashMap<>());
         Cell[][] board = boardMapping.getOrDefault(opponentName, new Cell[10][10]);
         Cell cell = board[row][col];
-        Boolean hit = cell != null && cell.getIsDeployed() && !cell.getHitOrMis().equals("hit");
+        Boolean hit = cell != null && cell.getIsDeployed();
         if (hit) {
+            if(!"hit".equals(cell.getHitOrMis()))
+                incrementScore(teamName, subTeamName);
             cell.setHitOrMis("hit");
-            incrementScore(teamName, subTeamName);
         }
 
         return hit;

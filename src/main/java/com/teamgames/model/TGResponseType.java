@@ -2,7 +2,7 @@ package com.teamgames.model;
 
 public enum TGResponseType {
     JOIN,
-    FLAG,
+    TURN,
     MARK_OPPONENT,
     MARK_SELF,
     DEPLOY,
