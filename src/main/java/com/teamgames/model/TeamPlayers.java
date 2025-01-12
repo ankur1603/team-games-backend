@@ -2,6 +2,7 @@ package com.teamgames.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Synchronized;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

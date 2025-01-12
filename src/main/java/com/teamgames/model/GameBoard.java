@@ -1,6 +1,7 @@
 package com.teamgames.model;
 
 import lombok.NoArgsConstructor;
+import lombok.Synchronized;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +16,17 @@ public class GameBoard {
     private final Map<String, Map<String, Boolean>> teamReady = new ConcurrentHashMap<>();
     private final Map<String, Map<String, Integer>> teamScore = new ConcurrentHashMap<>();
     private final Map<String, Map<String, Cell[][]>> teamBoard = new ConcurrentHashMap<>();
+    private final Map<String, String> turnMapping = new ConcurrentHashMap<>();
+
+    @Synchronized
+    public void setTurn(String teamName, String subTeamName) {
+        this.turnMapping.put(teamName,subTeamName);
+    }
+
+    @Synchronized
+    public String getTurn(String teamName) {
+        return this.turnMapping.get(teamName);
+    }
 
     public void clearTeamBoardAndScore(String teamName) {
         teamScore.remove(teamName);
